@@ -14,6 +14,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"iso-country-currency@npm:^0.7.2":
+  version: 0.7.2
+  resolution: "iso-country-currency@npm:0.7.2"
+  checksum: 997ef55fd60d6d8c024551e843fa676a5e8cf91a78fbe877a3b34011931c0324e09860b55d3b62068cf3b7672d40320f1ca2d3769c8f401410b27c42e338439c
+  languageName: node
+  linkType: hard
+
 "typescript@npm:^5.2.2":
   version: 5.2.2
   resolution: "typescript@npm:5.2.2"
@@ -46,6 +53,7 @@ __metadata:
   resolution: "ynab-csv-converter@workspace:."
   dependencies:
     "@types/node": "npm:^20.8.7"
+    iso-country-currency: "npm:^0.7.2"
     typescript: "npm:^5.2.2"
   languageName: unknown
   linkType: soft

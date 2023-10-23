@@ -4,5 +4,8 @@
   "devDependencies": {
     "@types/node": "^20.8.7",
     "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "iso-country-currency": "^0.7.2"
   }
 }
