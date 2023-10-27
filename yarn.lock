@@ -14,10 +14,50 @@ __metadata:
   languageName: node
   linkType: hard
 
+"csv-generate@npm:^4.3.0":
+  version: 4.3.0
+  resolution: "csv-generate@npm:4.3.0"
+  checksum: f131041efaf33dff0f33c0dcac51785a2d9d9dccffff0a48f53aed7a71b755c87ee028f8982296ce52f2ce38710b9c971fa283c6fa2e5d4a357d9aa3f4445813
+  languageName: node
+  linkType: hard
+
+"csv-parse@npm:^5.5.2":
+  version: 5.5.2
+  resolution: "csv-parse@npm:5.5.2"
+  checksum: 96e2f0afd4f74a43908d197379cbbc59b73d144fc54208763e838614e1b98f5be23c4c3e707ead1ed4dd838b9f515f40ea6d2c98dbd3a50becb4663e982d1f78
+  languageName: node
+  linkType: hard
+
+"csv-stringify@npm:^6.4.4":
+  version: 6.4.4
+  resolution: "csv-stringify@npm:6.4.4"
+  checksum: 52123a2391a4bef416c54c03cb1ba988d3f1b5e7798602068a4def1c5ee3942b60b8cb07c8b41bc6a0cfad57c0a2a4fe8c55debbc8f9621f035565f56acb8785
+  languageName: node
+  linkType: hard
+
+"csv@npm:^6.3.5":
+  version: 6.3.5
+  resolution: "csv@npm:6.3.5"
+  dependencies:
+    csv-generate: "npm:^4.3.0"
+    csv-parse: "npm:^5.5.2"
+    csv-stringify: "npm:^6.4.4"
+    stream-transform: "npm:^3.2.10"
+  checksum: fc160d60432e35e18ee8249710b9f1d8726fc28c82a111bad3dc2ed48aa55d7ae392fdc29ce135adfec4a65b5cbec57ac2eabe7b7235e9b0ad640732ee92e888
+  languageName: node
+  linkType: hard
+
 "iso-country-currency@npm:^0.7.2":
   version: 0.7.2
   resolution: "iso-country-currency@npm:0.7.2"
   checksum: 997ef55fd60d6d8c024551e843fa676a5e8cf91a78fbe877a3b34011931c0324e09860b55d3b62068cf3b7672d40320f1ca2d3769c8f401410b27c42e338439c
+  languageName: node
+  linkType: hard
+
+"stream-transform@npm:^3.2.10":
+  version: 3.2.10
+  resolution: "stream-transform@npm:3.2.10"
+  checksum: 06e67869b9432d657f34ab7ee1ebba06ccc1cd457b9edc7ddfc80e1ecc562ec622a5e03a61ed7187250dd423a8f0820df1692644d40a737d6f028ac0508ea34b
   languageName: node
   linkType: hard
 
@@ -53,6 +93,7 @@ __metadata:
   resolution: "ynab-csv-converter@workspace:."
   dependencies:
     "@types/node": "npm:^20.8.7"
+    csv: "npm:^6.3.5"
     iso-country-currency: "npm:^0.7.2"
     typescript: "npm:^5.2.2"
   languageName: unknown
