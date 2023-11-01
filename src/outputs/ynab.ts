@@ -1,7 +1,6 @@
-export type Transaction = {
-  date: Date;
+export type YnabTransaction = {
+  date: string;
   payee: string;
   memo: string;
-  outflow: number;
-  inflow: number;
+  amount: string;
 };
