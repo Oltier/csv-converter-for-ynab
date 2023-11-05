@@ -240,6 +240,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"xlsx@https://cdn.sheetjs.com/xlsx-0.20.0/xlsx-0.20.0.tgz":
+  version: 0.20.0
+  resolution: "xlsx@https://cdn.sheetjs.com/xlsx-0.20.0/xlsx-0.20.0.tgz"
+  bin:
+    xlsx: ./bin/xlsx.njs
+  checksum: 0037e0dba8457a279b1920a93d70bae5a5d4c17ef87dd8eacb75bf5300d7299fcc18b2bafc0d424323f5cc02d2698a31475cfbcbdb980e31534b14bf30f6a72c
+  languageName: node
+  linkType: hard
+
 "yn@npm:3.1.1":
   version: 3.1.1
   resolution: "yn@npm:3.1.1"
@@ -256,5 +265,6 @@ __metadata:
     prettier: "npm:3.0.3"
     ts-node: "npm:^10.9.1"
     typescript: "npm:^5.2.2"
+    xlsx: "https://cdn.sheetjs.com/xlsx-0.20.0/xlsx-0.20.0.tgz"
   languageName: unknown
   linkType: soft

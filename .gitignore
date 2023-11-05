@@ -17,4 +17,6 @@
 .yarnrc.yml
 
 src/examples/input/*
-src/outputs/*.csv
+src/outputs/*
+outputs/*
+inputs/*
