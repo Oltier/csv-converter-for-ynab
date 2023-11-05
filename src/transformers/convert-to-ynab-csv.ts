@@ -10,7 +10,7 @@ const convertToYnabCsv = transform<TransactionCombinedAmount, YnabTransaction>((
     date: outputDate,
     payee: data.payee,
     memo: data.memo,
-    amount: data.amount.toPrecision(2)
+    amount: `${Math.floor(data.amount * 100) / 100}`
   } satisfies YnabTransaction;
 });
 

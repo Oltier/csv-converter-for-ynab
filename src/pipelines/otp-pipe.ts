@@ -90,6 +90,7 @@ export default async function processOtpPipe(path: string, prismaClient: PrismaC
       } satisfies parser.Options)
     )
     .pipe(parseToTransaction)
+    // TODO this is not working properly but I also have no idea why...
     .pipe(currencyExchange(exchangeRates))
     .pipe(convertToYnabCsv)
     .pipe(
