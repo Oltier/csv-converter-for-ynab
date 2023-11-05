@@ -4,18 +4,24 @@
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "yarn db:generate && tsc",
+    "db:generate": "yarn pnpify prisma generate",
     "start": "ts-node ./src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
-    "@types/node": "^20.8.7",
+    "@types/node": "^20.8.10",
+    "@yarnpkg/pnpify": "^4.0.0",
     "prettier": "3.0.3",
+    "prisma": "5.5.2",
     "ts-node": "^10.9.1",
     "typescript": "^5.2.2"
   },
   "dependencies": {
+    "@prisma/client": "5.5.2",
     "csv": "^6.3.5",
+    "dotenv": "^16.3.1",
+    "moment": "^2.29.4",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.0/xlsx-0.20.0.tgz"
   }
 }

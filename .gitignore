@@ -20,3 +20,9 @@ src/examples/input/*
 src/outputs/*
 outputs/*
 inputs/*
+
+.env
+
+prisma/dev*
+
+src/generated

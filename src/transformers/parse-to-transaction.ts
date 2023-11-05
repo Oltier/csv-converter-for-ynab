@@ -1,5 +1,5 @@
-import { TransactionCombinedAmount } from '../transformers/types';
-import { TransactionInput } from './types';
+import { TransactionCombinedAmount } from './types';
+import { TransactionInput } from '../inputs/types';
 import { transform } from 'csv';
 
 const otpMapping: Record<string, keyof TransactionCombinedAmount> = {

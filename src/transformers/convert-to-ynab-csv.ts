@@ -1,9 +1,10 @@
-import { TransactionCombinedAmount } from '../transformers/types';
-import { YnabTransaction } from './ynab';
+import { TransactionCombinedAmount } from './types';
+import { YnabTransaction } from '../outputs/ynab';
 import { transform } from 'csv';
+import moment from 'moment';
 
 const convertToYnabCsv = transform<TransactionCombinedAmount, YnabTransaction>((data: TransactionCombinedAmount) => {
-  const outputDate = data.date.toLocaleDateString('en-US');
+  const outputDate = moment(data.date).format('MM/DD/YYYY');
 
   return {
     date: outputDate,
