@@ -10,6 +10,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
+    "@types/lodash": "^4",
     "@types/node": "^20.8.10",
     "@yarnpkg/pnpify": "^4.0.0",
     "prettier": "3.0.3",
@@ -21,6 +22,7 @@
     "@prisma/client": "5.5.2",
     "csv": "^6.3.5",
     "dotenv": "^16.3.1",
+    "lodash": "^4.17.21",
     "moment": "^2.29.4",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.0/xlsx-0.20.0.tgz"
   }

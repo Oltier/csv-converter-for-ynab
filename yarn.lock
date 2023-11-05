@@ -181,6 +181,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/lodash@npm:^4":
+  version: 4.14.200
+  resolution: "@types/lodash@npm:4.14.200"
+  checksum: 7a8dac6dc866f10d1888846d6189d1faeb4f65adb139f0837a005fd1adcde62e60d7e7abb1a2733d13fc57bebb337d74182d8ad3dbd1d211dcd0c310c47e81bc
+  languageName: node
+  linkType: hard
+
 "@types/node@npm:*, @types/node@npm:^20.8.10":
   version: 20.8.10
   resolution: "@types/node@npm:20.8.10"
@@ -761,7 +768,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash@npm:^4.17.15":
+"lodash@npm:^4.17.15, lodash@npm:^4.17.21":
   version: 4.17.21
   resolution: "lodash@npm:4.17.21"
   checksum: d8cbea072bb08655bb4c989da418994b073a608dffa608b09ac04b43a791b12aeae7cd7ad919aa4c925f33b48490b5cfe6c1f71d827956071dae2e7bb3a6b74c
@@ -1228,10 +1235,12 @@ __metadata:
   resolution: "ynab-csv-converter@workspace:."
   dependencies:
     "@prisma/client": "npm:5.5.2"
+    "@types/lodash": "npm:^4"
     "@types/node": "npm:^20.8.10"
     "@yarnpkg/pnpify": "npm:^4.0.0"
     csv: "npm:^6.3.5"
     dotenv: "npm:^16.3.1"
+    lodash: "npm:^4.17.21"
     moment: "npm:^2.29.4"
     prettier: "npm:3.0.3"
     prisma: "npm:5.5.2"

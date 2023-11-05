@@ -8,6 +8,8 @@ import ExchangeService from '../services/exchange-service';
 import * as process from 'process';
 import moment from 'moment';
 import { PrismaClient } from '../generated/client';
+import currencyExchange from '../transformers/currency-exchange';
+import _ from 'lodash';
 
 export default async function processOtpPipe(path: string, prismaClient: PrismaClient): Promise<void> {
   const xlsx = XLSX.readFile(path);
@@ -50,9 +52,9 @@ export default async function processOtpPipe(path: string, prismaClient: PrismaC
     (date) => !cachedDateValues.find((cachedDate: any) => cachedDate.date === date)
   );
 
-  const exchangeRates = await exchangeRateService.fetchAllRatesByDates(datesToFetch);
+  const newExchangeRates = await exchangeRateService.fetchAllRatesByDates(datesToFetch);
   await Promise.all(
-    exchangeRates.map((rate) =>
+    newExchangeRates.map((rate) =>
       prismaClient.currencyRateUsd.create({
         data: {
           date: moment(rate.date).format('YYYY-MM-DD'),
@@ -61,6 +63,8 @@ export default async function processOtpPipe(path: string, prismaClient: PrismaC
       })
     )
   );
+
+  const exchangeRates = _.keyBy([...cachedDateValues, ...newExchangeRates], (rate) => rate.date);
 
   const outputPath = `${process.cwd()}/outputs/otp-ynab.csv`;
   const writeStream = fs.createWriteStream(outputPath);
@@ -86,6 +90,7 @@ export default async function processOtpPipe(path: string, prismaClient: PrismaC
       } satisfies parser.Options)
     )
     .pipe(parseToTransaction)
+    .pipe(currencyExchange(exchangeRates))
     .pipe(convertToYnabCsv)
     .pipe(
       stringify({
