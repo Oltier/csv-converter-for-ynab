@@ -29,7 +29,7 @@ const parseToTransaction = transform<TransactionInput, TransactionCombinedAmount
     return {
       date: parseDate(rawTransaction.date),
       payee: rawTransaction.payee,
-      memo: rawTransaction.memo,
+      memo: typeof rawTransaction.memo === 'string' ? rawTransaction.memo.replace(/\s+/g, ' ') : '',
       amount: parseAmount(rawTransaction.amount),
       currency: rawTransaction.currency
     } satisfies TransactionCombinedAmount;

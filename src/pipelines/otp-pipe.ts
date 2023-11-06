@@ -4,6 +4,7 @@ import * as XLSX from 'xlsx';
 import parseToTransaction from '../transformers/parse-to-transaction';
 import convertToYnabCsv from '../transformers/convert-to-ynab-csv';
 import { Readable } from 'stream';
+import { pipeline } from 'stream/promises';
 import ExchangeService from '../services/exchange-service';
 import * as process from 'process';
 import moment from 'moment';
@@ -26,19 +27,20 @@ export default async function processOtpPipe(path: string, prismaClient: PrismaC
       }
     }
   }
-
-  const cachedDateValues = await prismaClient.currencyRateUsd.findMany({
-    select: {
-      date: true,
-      EUR: true,
-      HUF: true
-    },
-    where: {
-      date: {
-        in: Array.from(dateValues).map((date) => moment(date).format('YYYY-MM-DD'))
+  const [cachedDateValues] = await Promise.all([
+    prismaClient.currencyRateUsd.findMany({
+      select: {
+        date: true,
+        EUR: true,
+        HUF: true
+      },
+      where: {
+        date: {
+          in: Array.from(dateValues).map((date) => moment(date).format('YYYY-MM-DD'))
+        }
       }
-    }
-  });
+    })
+  ]);
 
   if (!process.env.EXCHANGE_API_KEY) {
     throw new Error('Missing EXCHANGE_API_KEY environment variable');
@@ -79,24 +81,21 @@ export default async function processOtpPipe(path: string, prismaClient: PrismaC
     rawNumbers: true
   });
 
-  readStream
-    .pipe(
-      parse({
-        delimiter: ';',
-        trim: true,
-        cast: true,
-        castDate: true,
-        columns: true
-      } satisfies parser.Options)
-    )
-    .pipe(parseToTransaction)
-    // TODO this is not working properly but I also have no idea why...
-    .pipe(currencyExchange(exchangeRates))
-    .pipe(convertToYnabCsv)
-    .pipe(
-      stringify({
-        delimiter: ','
-      } satisfies stringifier.Options)
-    )
-    .pipe(writeStream);
+  // TODO skip account numbers that don't match expected
+  return pipeline(
+    readStream,
+    parse({
+      delimiter: ';',
+      trim: true,
+      cast: true,
+      columns: true
+    } satisfies parser.Options),
+    parseToTransaction,
+    currencyExchange(exchangeRates),
+    convertToYnabCsv,
+    stringify({
+      delimiter: ','
+    } satisfies stringifier.Options),
+    writeStream
+  );
 }
