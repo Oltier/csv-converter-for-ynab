@@ -21,19 +21,29 @@ export type Rates = ExchangeRatesResponse & {
 };
 
 export default class ExchangeService {
-  private readonly baseUrl = 'https://openexchangerates.org/api';
-  // private readonly baseUrl = 'https://a235eca0-a1ed-41fb-b04b-1312dc983760.mock.pstmn.io/api';
+  // private readonly baseUrl = 'https://openexchangerates.org/api';
+  private readonly baseUrl = 'https://a235eca0-a1ed-41fb-b04b-1312dc983760.mock.pstmn.io/api';
   private readonly apiKey: string;
   private readonly fetch: typeof fetch;
   private cachedRates: Record<string, Omit<CurrencyRateUsd, 'id' | 'date'>> = {};
+  private static instance: ExchangeService;
 
-  constructor(props: ExchangeServiceProps) {
+  private constructor(props: ExchangeServiceProps) {
     if (!props.apiKey) {
       throw new Error('Missing EXCHANGE_API_KEY environment variable');
     }
 
     this.apiKey = props.apiKey;
     this.fetch = props.fetch || fetch;
+  }
+
+  public static getInstance(): ExchangeService {
+    if (!ExchangeService.instance) {
+      ExchangeService.instance = new ExchangeService({
+        apiKey: process.env.EXCHANGE_API_KEY
+      });
+    }
+    return ExchangeService.instance;
   }
 
   public async prePopulateCache(dateValues: string[] | Set<string>) {

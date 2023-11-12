@@ -2,44 +2,48 @@ import { TransactionCombinedAmount } from './types';
 import { TransactionInput } from '../inputs/types';
 import { transform } from 'csv';
 
-const otpMapping: Record<string, keyof TransactionCombinedAmount> = {
-  'Tranzakció dátuma': 'date',
-  'Partner neve': 'payee',
-  Közlemény: 'memo',
-  Összeg: 'amount',
-  Pénznem: 'currency',
-  'Számla szám': 'accountNumber'
-};
+const parseToTransaction = (mapping: Record<string, keyof TransactionCombinedAmount>) =>
+  transform<TransactionInput, TransactionCombinedAmount>(
+    {
+      params: {
+        mapping
+      }
+    },
+    (data: TransactionInput, cb, params) => {
+      try {
 
-const parseToTransaction = transform<TransactionInput, TransactionCombinedAmount>((data: TransactionInput) => {
-  try {
-    const rawTransaction = Object.keys(data).reduce(
-      (acc, key) => {
-        const trimmedKey = key.trim();
-        const newKey = otpMapping[trimmedKey];
+        const rawTransaction = Object.keys(data).reduce(
+          (acc, key) => {
+            const trimmedKey = key.trim();
+            const newKey: keyof TransactionCombinedAmount = params.mapping[trimmedKey];
 
-        if (newKey) {
-          acc[newKey] = data[key];
-        }
+            if (newKey) {
+              acc[newKey] = data[key];
+            }
 
-        return acc;
-      },
-      {} as Record<keyof TransactionCombinedAmount, any>
-    );
+            return acc;
+          },
+          {} as Record<keyof TransactionCombinedAmount, any>
+        );
 
-    return {
-      date: parseDate(rawTransaction.date),
-      payee: rawTransaction.payee,
-      memo: typeof rawTransaction.memo === 'string' ? rawTransaction.memo.replace(/\s+/g, ' ') : '',
-      amount: parseAmount(rawTransaction.amount),
-      currency: rawTransaction.currency,
-      accountNumber: `${rawTransaction.accountNumber}`
-    } satisfies TransactionCombinedAmount;
-  } catch (e) {
-    console.error(JSON.stringify(data, null, 2));
-    throw e;
-  }
-});
+        const res = {
+          date: parseDate(rawTransaction.date),
+          payee: rawTransaction.payee,
+          memo: typeof rawTransaction.memo === 'string' ? rawTransaction.memo.replace(/\s+/g, ' ') : '',
+          amount: parseAmount(rawTransaction.amount),
+          currency: rawTransaction.currency,
+          accountNumber: `${rawTransaction.accountNumber}`
+        } satisfies TransactionCombinedAmount;
+
+        cb(null, res);
+
+        return res;
+      } catch (e) {
+        console.error(JSON.stringify(data, null, 2));
+        throw e;
+      }
+    }
+  );
 
 function parseAmount(maybeAmount: unknown): number {
   if (typeof maybeAmount === 'number') {

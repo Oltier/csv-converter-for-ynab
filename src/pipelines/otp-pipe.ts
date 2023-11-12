@@ -12,6 +12,15 @@ import moment from 'moment';
 import { TransactionCombinedAmount } from '../transformers/types';
 import filter from '../transformers/filter';
 
+export const otpMapping: Record<string, keyof TransactionCombinedAmount> = {
+  'Tranzakció dátuma': 'date',
+  'Partner neve': 'payee',
+  Közlemény: 'memo',
+  Összeg: 'amount',
+  Pénznem: 'currency',
+  'Számla szám': 'accountNumber'
+};
+
 export default async function processOtpPipe(path: string): Promise<void> {
   const xlsx = XLSX.readFile(path);
   const worksheet = xlsx.Sheets[xlsx.SheetNames[0]];
@@ -28,9 +37,7 @@ export default async function processOtpPipe(path: string): Promise<void> {
     }
   }
 
-  const exchangeRateService = new ExchangeService({
-    apiKey: process.env.EXCHANGE_API_KEY
-  });
+  const exchangeRateService = ExchangeService.getInstance();
 
   await exchangeRateService.prePopulateCache(dateValues);
 
@@ -55,7 +62,7 @@ export default async function processOtpPipe(path: string): Promise<void> {
       cast: true,
       columns: true
     } satisfies parser.Options),
-    parseToTransaction,
+    parseToTransaction(otpMapping),
     filter((data: TransactionCombinedAmount) =>
       process.env.EXPECTED_ACCOUNT_NUMBER ? data.accountNumber === process.env.EXPECTED_ACCOUNT_NUMBER : true
     ),

@@ -1,9 +1,13 @@
 import 'dotenv/config';
 import processOtpPipe from './pipelines/otp-pipe';
 import DBClient from './db/DBClient';
+import processErstePipe from './pipelines/erste-pipe';
 
 async function doStuff() {
-  await processOtpPipe(`${__dirname}/examples/input/otp.xlsx`);
+  await Promise.all([
+    // processOtpPipe(`${__dirname}/examples/input/otp.xlsx`),
+    processErstePipe(`${__dirname}/examples/input/erste.csv`)
+  ]);
 }
 
 doStuff()
