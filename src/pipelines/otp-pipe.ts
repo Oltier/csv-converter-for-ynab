@@ -68,7 +68,7 @@ export default async function processOtpPipe(path: string): Promise<void> {
     filter((data: TransactionCombinedAmount) =>
       process.env.EXPECTED_ACCOUNT_NUMBER ? data.accountNumber === process.env.EXPECTED_ACCOUNT_NUMBER : true
     ),
-    currencyExchange(exchangeRateService),
+    currencyExchange(exchangeRateService, 'EUR', 'HUF'),
     convertToYnabCsv,
     stringify({
       delimiter: ','

@@ -18,10 +18,6 @@ export const szepMapping: TransactionInputMapping = {
   payee: 'Ellenoldali név',
   outflow: 'Terhelés',
   inflow: 'Jóváírás',
-  currency: {
-    fields: 'Pénznem',
-    default: 'HUF'
-  },
 };
 
 export default async function processSzepPipe(path: string): Promise<void> {
@@ -66,7 +62,7 @@ export default async function processSzepPipe(path: string): Promise<void> {
       columns: true
     } satisfies parser.Options),
     parseToTransaction(szepMapping),
-    currencyExchange(exchangeRateService),
+    currencyExchange(exchangeRateService, 'EUR', 'HUF'),
     convertToYnabCsv,
     stringify({
       delimiter: ','

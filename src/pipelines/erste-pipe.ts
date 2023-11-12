@@ -10,15 +10,15 @@ import currencyExchange from '../transformers/currency-exchange';
 import { TransactionInputMapping } from '../inputs/types';
 
 export const ersteMapping: TransactionInputMapping = {
-  'date': ['Tranzakció dátuma és ideje', 'Könyvelés dátuma'],
-  'payee': {
+  date: ['Tranzakció dátuma és ideje', 'Könyvelés dátuma'],
+  payee: {
     fields: 'Partner név',
-    default: 'Erste Bank',
+    default: 'Erste Bank'
   },
-  'memo': 'Közlemény',
-  'amount': 'Összeg',
-  'currency': 'Devizanem',
-}
+  memo: 'Közlemény',
+  amount: 'Összeg',
+  currency: 'Devizanem'
+};
 
 export default async function processErstePipe(path: string): Promise<void> {
   const exchangeRateService = ExchangeService.getInstance();
@@ -38,10 +38,10 @@ export default async function processErstePipe(path: string): Promise<void> {
       cast: true,
       columns: true,
       quote: '"',
-      bom: true,
+      bom: true
     } satisfies parser.Options),
     parseToTransaction(ersteMapping),
-    currencyExchange(exchangeRateService),
+    currencyExchange(exchangeRateService, 'EUR', 'HUF'),
     convertToYnabCsv,
     stringify({
       delimiter: ','
