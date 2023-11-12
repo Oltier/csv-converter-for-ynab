@@ -102,14 +102,14 @@ export default class ExchangeService {
       });
     }
 
-    const cachedDateFromDb = await this.prePopulateCache([dateString]);
+    const cachedDateFromDb = (await this.prePopulateCache([dateString]))[dateString];
 
     if (cachedDateFromDb) {
       console.log(`Using cached exchange rates from db for ${dateString}`);
       return Promise.resolve({
         timestamp: Date.now(),
         base: 'USD',
-        rates: cachedDateFromDb[dateString],
+        rates: cachedDateFromDb,
         date: dateString
       });
     }

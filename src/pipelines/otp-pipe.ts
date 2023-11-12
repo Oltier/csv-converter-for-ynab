@@ -73,6 +73,7 @@ export default async function processOtpPipe(path: string): Promise<void> {
       columns: true
     } satisfies parser.Options),
     parseToTransaction(otpMapping),
+    // TODO: Instead of dropping, try deduping somehow
     filter((data: TransactionCombinedAmount) =>
       process.env.EXPECTED_ACCOUNT_NUMBER ? data.accountNumber === process.env.EXPECTED_ACCOUNT_NUMBER : true
     ),
