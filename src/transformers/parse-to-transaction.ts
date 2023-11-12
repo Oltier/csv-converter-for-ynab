@@ -1,8 +1,18 @@
 import { TransactionCombinedAmount } from './types';
-import { TransactionInput } from '../inputs/types';
+import { TransactionInput, TransactionInputMapping } from '../inputs/types';
 import { transform } from 'csv';
+import { trim } from 'lodash';
 
-const parseToTransaction = (mapping: Record<string, keyof TransactionCombinedAmount>) =>
+const trimKeys: (obj: Record<string, any>) => Record<string, any> = (obj: Record<string, any>) =>
+  Object.entries(obj).reduce(
+    (acc, [key, value]) => ({
+      ...acc,
+      [trim(key)]: value
+    }),
+    {}
+  );
+
+const parseToTransaction = (mapping: TransactionInputMapping) =>
   transform<TransactionInput, TransactionCombinedAmount>(
     {
       params: {
@@ -11,14 +21,16 @@ const parseToTransaction = (mapping: Record<string, keyof TransactionCombinedAmo
     },
     (data: TransactionInput, cb, params) => {
       try {
+        const trimmedData = trimKeys(data);
+        const dataTrimmedKeys = Object.keys(trimmedData);
+        const rawTransaction = Object.entries(mapping).reduce(
+          (acc, [transactionKey, rawKeys]: [string, string | string[]]) => {
+            const mappingKeys = Array.isArray(rawKeys) ? rawKeys : [rawKeys];
+            const trimmedMappingKeys = mappingKeys.map((key) => key.trim());
+            const sourceKey = trimmedMappingKeys.find((key) => dataTrimmedKeys.includes(key) && !!trimmedData[key]);
 
-        const rawTransaction = Object.keys(data).reduce(
-          (acc, key) => {
-            const trimmedKey = key.trim();
-            const newKey: keyof TransactionCombinedAmount = params.mapping[trimmedKey];
-
-            if (newKey) {
-              acc[newKey] = data[key];
+            if (sourceKey) {
+              acc[transactionKey as keyof TransactionCombinedAmount] = trimmedData[sourceKey];
             }
 
             return acc;

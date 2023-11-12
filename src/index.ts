@@ -5,8 +5,8 @@ import processErstePipe from './pipelines/erste-pipe';
 
 async function doStuff() {
   await Promise.all([
-    // processOtpPipe(`${__dirname}/examples/input/otp.xlsx`),
-    processErstePipe(`${__dirname}/examples/input/erste.csv`)
+    processOtpPipe(`${__dirname}/examples/input/otp.xlsx`),
+    // processErstePipe(`${__dirname}/examples/input/erste.csv`)
   ]);
 }
 

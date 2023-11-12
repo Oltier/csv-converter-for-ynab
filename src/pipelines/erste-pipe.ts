@@ -11,22 +11,22 @@ import currencyExchange from '../transformers/currency-exchange';
 import moment from 'moment';
 import { TransactionCombinedAmount } from '../transformers/types';
 import filter from '../transformers/filter';
+import { TransactionInput, TransactionInputMapping } from '../inputs/types';
 
-
-// export const otpMapping: Record<string, keyof TransactionCombinedAmount> = {
-//   'Tranzakció dátuma': 'date',
-//   'Partner neve': 'payee',
+// export const ersteMapping: TransactionInput = {
+//   'Tranzakció dátuma és ideje': 'date',
+//   'Partner név': 'payee',
 //   Közlemény: 'memo',
 //   Összeg: 'amount',
-//   Pénznem: 'currency',
-//   'Számla szám': 'accountNumber'
-// };
-export const ersteMapping: Record<string, keyof TransactionCombinedAmount> = {
-  'Tranzakció dátuma és ideje': 'date',
-  'Partner név': 'payee',
-  Közlemény: 'memo',
-  Összeg: 'amount',
-  Devizanem: 'currency',
+//   Devizanem: 'currency',
+// }
+
+export const ersteMapping: TransactionInputMapping = {
+  'date': 'Tranzakció dátuma és ideje',
+  'payee': 'Partner név',
+  'memo': 'Közlemény',
+  'amount': 'Összeg',
+  'currency': 'Devizanem',
 }
 
 export default async function processErstePipe(path: string): Promise<void> {
