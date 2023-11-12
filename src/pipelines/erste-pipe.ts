@@ -1,9 +1,7 @@
 import fs from 'fs';
 import { parse, parser, stringifier, stringify } from 'csv';
 import parseToTransaction from '../transformers/parse-to-transaction';
-import convertToYnabCsv, {
-  ConvertToYnabCsv
-} from '../transformers/convert-to-ynab-csv';
+import convertToYnabCsv from '../transformers/convert-to-ynab-csv';
 import { Readable } from 'stream';
 import { pipeline } from 'stream/promises';
 import ExchangeService from '../services/exchange-service';
@@ -43,8 +41,7 @@ export default async function processErstePipe(path: string): Promise<void> {
       bom: true
     } satisfies parser.Options),
     parseToTransaction(ersteMapping),
-    // currencyExchange(exchangeRateService, 'EUR', 'HUF'),
-    // @ts-ignore
+    currencyExchange(exchangeRateService, 'EUR', 'HUF'),
     convertToYnabCsv(),
     stringify({
       delimiter: ','

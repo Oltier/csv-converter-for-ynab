@@ -2,17 +2,13 @@ import fs from 'fs';
 import { parse, parser, stringifier, stringify } from 'csv';
 import * as XLSX from 'xlsx';
 import parseToTransaction from '../transformers/parse-to-transaction';
-import convertToYnabCsv, {
-  ConvertToYnabCsv
-} from '../transformers/convert-to-ynab-csv';
+import convertToYnabCsv from '../transformers/convert-to-ynab-csv';
 import { Readable } from 'stream';
 import { pipeline } from 'stream/promises';
 import ExchangeService from '../services/exchange-service';
 import * as process from 'process';
 import currencyExchange from '../transformers/currency-exchange';
 import moment from 'moment';
-import { TransactionCombinedAmount } from '../transformers/types';
-import filter from '../transformers/filter';
 import { TransactionInputMapping } from '../inputs/types';
 
 export const szepMapping: TransactionInputMapping = {
@@ -64,7 +60,7 @@ export default async function processSzepPipe(path: string): Promise<void> {
       columns: true
     } satisfies parser.Options),
     parseToTransaction(szepMapping),
-    // currencyExchange(exchangeRateService, 'EUR', 'HUF'),
+    currencyExchange(exchangeRateService, 'EUR', 'HUF'),
     convertToYnabCsv(),
     stringify({
       delimiter: ','

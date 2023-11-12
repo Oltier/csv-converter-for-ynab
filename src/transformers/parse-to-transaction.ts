@@ -13,11 +13,7 @@ const trimKeys: (obj: Record<string, any>) => Record<string, any> = (obj: Record
   );
 
 function parseToTransaction(mapping: TransactionInputMapping) {
-  return new Transformer({
-    params: {
-      mapping
-    }
-  }, (data: TransactionInput, cb, params) => {
+  return new Transformer<TransactionInput, TransactionCombinedAmount>((data: TransactionInput, cb) => {
     try {
       const trimmedData = trimKeys(data);
       const dataTrimmedKeys = Object.keys(trimmedData);

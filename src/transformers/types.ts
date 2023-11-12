@@ -1,8 +1,10 @@
+import { Currency } from '../types/currency';
+
 type TransactionBase = {
   date: Date;
   payee: string;
   memo: string;
-  currency?: string;
+  currency?: Currency;
   accountNumber?: string;
 }
 

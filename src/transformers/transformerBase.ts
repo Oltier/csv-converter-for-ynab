@@ -38,8 +38,8 @@ type TransformerOptions = {
   params: Record<string, any> | null;
 };
 
-export type HandlerCallback<T = any> = (err?: null | Error, record?: T) => void;
-type Handler<T = any, U = any> = (record: T, callback: HandlerCallback, params?: any) => U;
+export type HandlerCallback<T> = (err?: null | Error, record?: T) => void;
+type Handler<T, U> = (record: T, callback: HandlerCallback<U>, params?: any) => U;
 
 const defaultTransformerOptions: TransformerOptions = {
   consume: false,
@@ -48,7 +48,7 @@ const defaultTransformerOptions: TransformerOptions = {
   params: null
 };
 
-class Transformer<T = any, U = any> extends Transform {
+class Transformer<T, U> extends Transform {
   private options: TransformerOptions;
   private handler: Handler<T, U>;
   private state: {
@@ -58,7 +58,7 @@ class Transformer<T = any, U = any> extends Transform {
     paused: boolean;
   };
 
-  constructor(baseOptions: TransformerProps = {}, handler: Handler) {
+  constructor(handler: Handler<T, U>, baseOptions: TransformerProps = {}) {
     const options = {
       ...defaultTransformerOptions,
       ...baseOptions
@@ -76,7 +76,7 @@ class Transformer<T = any, U = any> extends Transform {
     };
   }
 
-  _transform(chunk: any, _: any, cb: HandlerCallback): void {
+  _transform(chunk: any, _: any, cb: HandlerCallback<U>): void {
     this.state.started++;
     this.state.running++;
 
@@ -116,7 +116,7 @@ class Transformer<T = any, U = any> extends Transform {
     }
   }
 
-  _flush(cb: HandlerCallback): void {
+  _flush(cb: HandlerCallback<U>): void {
     if (this.state.running === 0) {
       cb();
     } else {
@@ -128,7 +128,7 @@ class Transformer<T = any, U = any> extends Transform {
 
   private _ending?: () => void;
 
-  private __done(err: any, chunks: any[], cb?: HandlerCallback): any | undefined {
+  private __done(err: any, chunks: any[], cb?: HandlerCallback<U>): any | undefined {
     this.state.running--;
 
     if (err) {
