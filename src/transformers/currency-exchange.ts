@@ -22,7 +22,7 @@ const currencyExchange = (exchangeService: ExchangeService) =>
       const exchangeRate = 1 / exchangeRatesByDate.rates.HUF / (1 / exchangeRatesByDate.rates.EUR);
 
       // -60,000 HUF (FX rate: 0.0026019) [rest of memo]
-      const newMemo = `${data.amount} ${data.currency} (FX rate: ${exchangeRate.toPrecision(4)})${
+      const newMemo = `${data.amount.toLocaleString()} ${data.currency} (FX rate: ${exchangeRate.toPrecision(4)})${
         data.memo ? ` | ${data.memo}` : ''
       }`;
       const newAmount = data.amount * exchangeRate;

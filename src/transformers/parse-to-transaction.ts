@@ -1,4 +1,4 @@
-import { TransactionCombinedAmount } from './types';
+import { TransactionCombinedAmount, TransactionOutInAmount } from './types';
 import { TransactionInput, TransactionInputMapping, TransactionInputMappingConfig } from '../inputs/types';
 import { transform } from 'csv';
 import { trim } from 'lodash';
@@ -39,14 +39,14 @@ const parseToTransaction = (mapping: TransactionInputMapping) =>
 
             return acc;
           },
-          {} as Record<keyof TransactionCombinedAmount, any>
+          {} as Record<keyof TransactionCombinedAmount | keyof TransactionOutInAmount, any>
         );
 
         const res = {
           date: parseDate(rawTransaction.date),
           payee: parsePayee(rawTransaction.payee),
           memo: typeof rawTransaction.memo === 'string' ? rawTransaction.memo.replace(/\s+/g, ' ') : '',
-          amount: parseAmount(rawTransaction.amount),
+          amount: parseAmount(rawTransaction.amount, rawTransaction.inflow, rawTransaction.outflow),
           currency: rawTransaction.currency,
           accountNumber: `${rawTransaction.accountNumber}`
         } satisfies TransactionCombinedAmount;
@@ -64,22 +64,34 @@ const parseToTransaction = (mapping: TransactionInputMapping) =>
     }
   );
 
-function parseAmount(maybeAmount: unknown): number {
-  if (typeof maybeAmount === 'number') {
-    return maybeAmount;
+function parseAmount(maybeAmount: unknown, maybeInflow: unknown, maybeOutflow: unknown): number {
+  if (maybeAmount) {
+    return parseNumber(maybeAmount);
+  } else {
+    if (maybeInflow) {
+      return parseNumber(maybeInflow);
+    } else {
+      return parseNumber(maybeOutflow) * -1;
+    }
+  }
+}
+
+function parseNumber(maybeNumber: unknown): number {
+  if (typeof maybeNumber === 'number') {
+    return maybeNumber;
   }
 
-  if (typeof maybeAmount !== 'string') {
-    throw new Error(`Could not parse amount: ${maybeAmount}`);
+  if (typeof maybeNumber !== 'string') {
+    throw new Error(`Could not parse amount: ${maybeNumber}`);
   }
 
-  const trimmedAmount = maybeAmount.trim();
+  const trimmedAmount = maybeNumber.trim();
   const amountWithoutExtraCharacters = trimmedAmount.replace(/[^0-9.,\-]/g, '');
 
   const amount = parseFloat(amountWithoutExtraCharacters);
 
   if (isNaN(amount)) {
-    throw new Error(`Could not parse amount: ${maybeAmount}`);
+    throw new Error(`Could not parse amount: ${maybeNumber}`);
   }
 
   return amount;
