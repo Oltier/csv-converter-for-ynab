@@ -14,7 +14,7 @@ datasource db {
 
 model CurrencyRateUsd {
   id   Int      @id @default(autoincrement())
-  date String
+  date String   @unique
   AED  Float
   AFN  Float
   ALL  Float

@@ -1,23 +1,24 @@
 import { transform, transformer } from 'csv';
 import { TransactionCombinedAmount } from './types';
 import moment from 'moment';
+import ExchangeService from '../services/exchange-service';
 
-const currencyExchange = (exchangeRates: any) =>
+const currencyExchange = (exchangeService: ExchangeService) =>
   transform<TransactionCombinedAmount, TransactionCombinedAmount>(
     {
       params: {
-        exchangeRates
+        exchangeService
       }
     },
     (data: TransactionCombinedAmount, cb, params) => {
-      if (!data.currency || !('exchangeRates' in params)) {
+      if (!data.currency || !('exchangeService' in params)) {
         // TODO I shouldn't have to call cb here... but hey... it works now
         cb(null, data);
         return data;
       }
 
       const formattedDate = moment(data.date).format('YYYY-MM-DD');
-      const exchangeRatesByDate = params.exchangeRates[formattedDate];
+      const exchangeRatesByDate = params.exchangeService.fetchRatesByDate(formattedDate);
       const exchangeRate = 1 / exchangeRatesByDate.HUF / (1 / exchangeRatesByDate.EUR);
 
       // -60,000 HUF (FX rate: 0.0026019) [rest of memo]
