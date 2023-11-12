@@ -3,6 +3,7 @@ type TransactionBase = {
   payee: string;
   memo: string;
   currency?: string;
+  accountNumber?: string;
 }
 
 export type TransactionOutInAmount = TransactionBase & {

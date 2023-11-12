@@ -9,11 +9,12 @@ import ExchangeService from '../services/exchange-service';
 import * as process from 'process';
 import currencyExchange from '../transformers/currency-exchange';
 import moment from 'moment';
+import { TransactionCombinedAmount } from '../transformers/types';
+import filter from '../transformers/filter';
 
 export default async function processOtpPipe(path: string): Promise<void> {
   const xlsx = XLSX.readFile(path);
   const worksheet = xlsx.Sheets[xlsx.SheetNames[0]];
-
 
   const dateValues: Set<string> = new Set();
 
@@ -46,7 +47,6 @@ export default async function processOtpPipe(path: string): Promise<void> {
     rawNumbers: true
   });
 
-  // TODO skip account numbers that don't match expected
   return pipeline(
     readStream,
     parse({
@@ -56,6 +56,9 @@ export default async function processOtpPipe(path: string): Promise<void> {
       columns: true
     } satisfies parser.Options),
     parseToTransaction,
+    filter((data: TransactionCombinedAmount) =>
+      process.env.EXPECTED_ACCOUNT_NUMBER ? data.accountNumber === process.env.EXPECTED_ACCOUNT_NUMBER : true
+    ),
     currencyExchange(exchangeRateService),
     convertToYnabCsv,
     stringify({

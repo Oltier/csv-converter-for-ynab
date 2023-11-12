@@ -1,6 +1,0 @@
-﻿Tranzakció dátuma;Könyvelés dátuma;Típus;Bejövő/Kimenő;Partner neve;Partner számlaszáma/azonosítója;Költési kategória;Közlemény;Számla név;Számla szám;Összeg;Pénznem
-2023-09-29 08:42:00;2023-09-29;NAPKÖZBENI ÁTUTALÁS;Bejövő;Something Something ltd;21029112-11111112-25163151;Nem kategorizált;09. HAVI MUNKABER;Smart számla;2288449512358220;917 379;HUF
-2023-09-30 07:38:00;2023-10-01;KAMATJÓVÁÍRÁS;Bejövő;KAMATJÓVÁÍRÁS;;Számlák, rezsi;;Emergency Fund;2288449512358220; 1;HUF
-2023-09-30 12:53:29;2023-10-02;VÁSÁRLÁS KÁRTYÁVAL;Kimenő;Revolut**8362*;;Utalás;2023.09.30 1804248195 Revolut**8362*           -APPLE 691,120EUR    0,;Smart számla;2288449512358220;-270 000;HUF
-2023-09-30 16:35:46;2023-10-02;ÁTUTALÁS BANKON BELÜL;Kimenő;Smart Takarékszámla 2;21029112-11111112-25163151;Nem kategorizált;;Smart számla;2288449512358220;-500 000;HUF
-2023-10-21 11:51:07;2023-10-24;KÉSZPÉNZFELVÉT ATM-BŐL;Kimenő;OTP;;Készpénz felvétel;2023.10.21 1804248195 Debrecen Hatvan u.2;Smart számla;2288449512358220;-9 000;HUF

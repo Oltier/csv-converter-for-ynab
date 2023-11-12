@@ -7,7 +7,8 @@ const otpMapping: Record<string, keyof TransactionCombinedAmount> = {
   'Partner neve': 'payee',
   Közlemény: 'memo',
   Összeg: 'amount',
-  Pénznem: 'currency'
+  Pénznem: 'currency',
+  'Számla szám': 'accountNumber'
 };
 
 const parseToTransaction = transform<TransactionInput, TransactionCombinedAmount>((data: TransactionInput) => {
@@ -31,7 +32,8 @@ const parseToTransaction = transform<TransactionInput, TransactionCombinedAmount
       payee: rawTransaction.payee,
       memo: typeof rawTransaction.memo === 'string' ? rawTransaction.memo.replace(/\s+/g, ' ') : '',
       amount: parseAmount(rawTransaction.amount),
-      currency: rawTransaction.currency
+      currency: rawTransaction.currency,
+      accountNumber: `${rawTransaction.accountNumber}`
     } satisfies TransactionCombinedAmount;
   } catch (e) {
     console.error(JSON.stringify(data, null, 2));
