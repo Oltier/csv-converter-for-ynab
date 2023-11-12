@@ -2,7 +2,7 @@ import fs from 'fs';
 import { parse, parser, stringifier, stringify } from 'csv';
 import * as XLSX from 'xlsx';
 import parseToTransaction from '../transformers/parse-to-transaction';
-import convertToYnabCsv from '../transformers/convert-to-ynab-csv';
+import convertToYnabCsv, { ConvertToYnabCsv } from '../transformers/convert-to-ynab-csv';
 import { Readable } from 'stream';
 import { pipeline } from 'stream/promises';
 import ExchangeService from '../services/exchange-service';
@@ -65,11 +65,11 @@ export default async function processOtpPipe(path: string): Promise<void> {
     } satisfies parser.Options),
     parseToTransaction(otpMapping),
     // TODO: Instead of dropping, try deduping somehow
-    filter((data: TransactionCombinedAmount) =>
-      process.env.EXPECTED_ACCOUNT_NUMBER ? data.accountNumber === process.env.EXPECTED_ACCOUNT_NUMBER : true
-    ),
-    currencyExchange(exchangeRateService, 'EUR', 'HUF'),
-    convertToYnabCsv,
+    // filter((data: TransactionCombinedAmount) =>
+    //   process.env.EXPECTED_ACCOUNT_NUMBER ? data.accountNumber === process.env.EXPECTED_ACCOUNT_NUMBER : true
+    // ),
+    // currencyExchange(exchangeRateService, 'EUR', 'HUF'),
+    convertToYnabCsv(),
     stringify({
       delimiter: ','
     } satisfies stringifier.Options),

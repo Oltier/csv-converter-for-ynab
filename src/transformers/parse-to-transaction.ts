@@ -1,7 +1,7 @@
 import { TransactionCombinedAmount, TransactionOutInAmount } from './types';
 import { TransactionInput, TransactionInputMapping, TransactionInputMappingConfig } from '../inputs/types';
-import { transform } from 'csv';
 import { trim } from 'lodash';
+import Transformer from './transformerBase';
 
 const trimKeys: (obj: Record<string, any>) => Record<string, any> = (obj: Record<string, any>) =>
   Object.entries(obj).reduce(
@@ -12,57 +12,55 @@ const trimKeys: (obj: Record<string, any>) => Record<string, any> = (obj: Record
     {}
   );
 
-const parseToTransaction = (mapping: TransactionInputMapping) =>
-  transform<TransactionInput, TransactionCombinedAmount>(
-    {
-      params: {
-        mapping
-      }
-    },
-    (data: TransactionInput, cb, params) => {
-      try {
-        const trimmedData = trimKeys(data);
-        const dataTrimmedKeys = Object.keys(trimmedData);
-        const rawTransaction = Object.entries(mapping).reduce(
-          (acc, [transactionKey, maybeRawKeys]: [string, string | string[] | TransactionInputMappingConfig]) => {
-            const rawKeys =
-              typeof maybeRawKeys === 'object' && 'fields' in maybeRawKeys ? maybeRawKeys.fields : maybeRawKeys;
-            const mappingKeys = Array.isArray(rawKeys) ? rawKeys : [rawKeys];
-            const trimmedMappingKeys = mappingKeys.map((key) => key.trim());
-            const sourceKey = trimmedMappingKeys.find((key) => dataTrimmedKeys.includes(key) && !!trimmedData[key]);
-
-            if (sourceKey) {
-              acc[transactionKey as keyof TransactionCombinedAmount] = trimmedData[sourceKey];
-            } else if (typeof maybeRawKeys === 'object' && 'default' in maybeRawKeys) {
-              acc[transactionKey as keyof TransactionCombinedAmount] = maybeRawKeys.default;
-            }
-
-            return acc;
-          },
-          {} as Record<keyof TransactionCombinedAmount | keyof TransactionOutInAmount, any>
-        );
-
-        const res = {
-          date: parseDate(rawTransaction.date),
-          payee: parsePayee(rawTransaction.payee),
-          memo: typeof rawTransaction.memo === 'string' ? rawTransaction.memo.replace(/\s+/g, ' ') : '',
-          amount: parseAmount(rawTransaction.amount, rawTransaction.inflow, rawTransaction.outflow),
-          currency: rawTransaction.currency,
-          accountNumber: `${rawTransaction.accountNumber}`
-        } satisfies TransactionCombinedAmount;
-
-        cb(null, res);
-
-        return res;
-      } catch (e) {
-        console.error(JSON.stringify(data, null, 2));
-        if (e instanceof Error) {
-          cb(e);
-        }
-        throw e;
-      }
+function parseToTransaction(mapping: TransactionInputMapping) {
+  return new Transformer({
+    params: {
+      mapping
     }
-  );
+  }, (data: TransactionInput, cb, params) => {
+    try {
+      const trimmedData = trimKeys(data);
+      const dataTrimmedKeys = Object.keys(trimmedData);
+      const rawTransaction = Object.entries(mapping).reduce(
+        (acc, [transactionKey, maybeRawKeys]: [string, string | string[] | TransactionInputMappingConfig]) => {
+          const rawKeys =
+            typeof maybeRawKeys === 'object' && 'fields' in maybeRawKeys ? maybeRawKeys.fields : maybeRawKeys;
+          const mappingKeys = Array.isArray(rawKeys) ? rawKeys : [rawKeys];
+          const trimmedMappingKeys = mappingKeys.map((key) => key.trim());
+          const sourceKey = trimmedMappingKeys.find((key) => dataTrimmedKeys.includes(key) && !!trimmedData[key]);
+
+          if (sourceKey) {
+            acc[transactionKey as keyof TransactionCombinedAmount] = trimmedData[sourceKey];
+          } else if (typeof maybeRawKeys === 'object' && 'default' in maybeRawKeys) {
+            acc[transactionKey as keyof TransactionCombinedAmount] = maybeRawKeys.default;
+          }
+
+          return acc;
+        },
+        {} as Record<keyof TransactionCombinedAmount | keyof TransactionOutInAmount, any>
+      );
+
+      const res = {
+        date: parseDate(rawTransaction.date),
+        payee: parsePayee(rawTransaction.payee),
+        memo: typeof rawTransaction.memo === 'string' ? rawTransaction.memo.replace(/\s+/g, ' ') : '',
+        amount: parseAmount(rawTransaction.amount, rawTransaction.inflow, rawTransaction.outflow),
+        currency: rawTransaction.currency,
+        accountNumber: `${rawTransaction.accountNumber}`
+      } satisfies TransactionCombinedAmount;
+
+      cb(null, res);
+
+      return res;
+    } catch (e) {
+      console.error(JSON.stringify(data, null, 2));
+      if (e instanceof Error) {
+        cb(e);
+      }
+      throw e;
+    }
+  });
+}
 
 function parseAmount(maybeAmount: unknown, maybeInflow: unknown, maybeOutflow: unknown): number {
   if (maybeAmount) {

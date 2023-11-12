@@ -7,9 +7,9 @@ import processSzepPipe from './pipelines/szep-pipe';
 async function doStuff() {
   console.log('Starting...');
   console.log('Processing OTP...');
-  // await processOtpPipe(`${process.cwd()}/inputs/otp.xlsx`);
+  await processOtpPipe(`${process.cwd()}/inputs/otp.xlsx`);
   console.log('Processing Erste...');
-  // await processErstePipe(`${process.cwd()}/inputs/erste.csv`);
+  await processErstePipe(`${process.cwd()}/inputs/erste.csv`);
   console.log('Processing Szep...');
   await processSzepPipe(`${process.cwd()}/inputs/szep.xlsx`);
   console.log('Done!');

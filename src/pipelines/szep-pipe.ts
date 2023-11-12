@@ -2,7 +2,9 @@ import fs from 'fs';
 import { parse, parser, stringifier, stringify } from 'csv';
 import * as XLSX from 'xlsx';
 import parseToTransaction from '../transformers/parse-to-transaction';
-import convertToYnabCsv from '../transformers/convert-to-ynab-csv';
+import convertToYnabCsv, {
+  ConvertToYnabCsv
+} from '../transformers/convert-to-ynab-csv';
 import { Readable } from 'stream';
 import { pipeline } from 'stream/promises';
 import ExchangeService from '../services/exchange-service';
@@ -62,8 +64,8 @@ export default async function processSzepPipe(path: string): Promise<void> {
       columns: true
     } satisfies parser.Options),
     parseToTransaction(szepMapping),
-    currencyExchange(exchangeRateService, 'EUR', 'HUF'),
-    convertToYnabCsv,
+    // currencyExchange(exchangeRateService, 'EUR', 'HUF'),
+    convertToYnabCsv(),
     stringify({
       delimiter: ','
     } satisfies stringifier.Options),
