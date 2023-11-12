@@ -8,11 +8,11 @@ import { pipeline } from 'stream/promises';
 import ExchangeService from '../services/exchange-service';
 import * as process from 'process';
 import moment from 'moment';
-import { PrismaClient } from '../generated/client';
 import currencyExchange from '../transformers/currency-exchange';
 import _ from 'lodash';
+import DBClient from '../db/DBClient';
 
-export default async function processOtpPipe(path: string, prismaClient: PrismaClient): Promise<void> {
+export default async function processOtpPipe(path: string): Promise<void> {
   const xlsx = XLSX.readFile(path);
   const worksheet = xlsx.Sheets[xlsx.SheetNames[0]];
 
@@ -28,7 +28,7 @@ export default async function processOtpPipe(path: string, prismaClient: PrismaC
     }
   }
   const [cachedDateValues] = await Promise.all([
-    prismaClient.currencyRateUsd.findMany({
+    DBClient.getInstance().currencyRateUsd.findMany({
       select: {
         date: true,
         EUR: true,
@@ -57,7 +57,7 @@ export default async function processOtpPipe(path: string, prismaClient: PrismaC
   const newExchangeRates = await exchangeRateService.fetchAllRatesByDates(datesToFetch);
   await Promise.all(
     newExchangeRates.map((rate) =>
-      prismaClient.currencyRateUsd.create({
+      DBClient.getInstance().currencyRateUsd.create({
         data: {
           date: moment(rate.date).format('YYYY-MM-DD'),
           ...rate.rates

@@ -1,19 +1,17 @@
 import 'dotenv/config';
 import processOtpPipe from './pipelines/otp-pipe';
-import { PrismaClient } from './generated/client';
-
-const prisma = new PrismaClient();
+import DBClient from './db/DBClient';
 
 async function doStuff() {
-  await processOtpPipe(`${__dirname}/examples/input/otp.xlsx`, prisma);
+  await processOtpPipe(`${__dirname}/examples/input/otp.xlsx`);
 }
 
 doStuff()
   .then(async () => {
-    await prisma.$disconnect();
+    await DBClient.disconnect();
   })
   .catch(async (e) => {
     console.error(e);
-    await prisma.$disconnect();
+    await DBClient.disconnect();
     process.exit(1);
   });
