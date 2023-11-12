@@ -21,8 +21,8 @@ export type Rates = ExchangeRatesResponse & {
 };
 
 export default class ExchangeService {
-  // private readonly baseUrl = 'https://openexchangerates.org/api';
-  private readonly baseUrl = 'https://a235eca0-a1ed-41fb-b04b-1312dc983760.mock.pstmn.io/api';
+  private readonly baseUrl = 'https://openexchangerates.org/api';
+  // private readonly baseUrl = 'https://a235eca0-a1ed-41fb-b04b-1312dc983760.mock.pstmn.io/api';
   private readonly apiKey: string;
   private readonly fetch: typeof fetch;
   private cachedRates: Record<string, Omit<CurrencyRateUsd, 'id' | 'date'>> = {};
@@ -68,6 +68,7 @@ export default class ExchangeService {
   }
 
   private async pushToCache(dateString: string, json: ExchangeRatesResponse) {
+    console.log(`Pushing exchange rates for ${dateString} to cache`);
     this.cachedRates[dateString] = json.rates;
     try {
       await DBClient.getInstance().currencyRateUsd.create({
@@ -109,6 +110,7 @@ export default class ExchangeService {
     const response = await this.fetch(url);
 
     if (!response.ok) {
+      console.error(response.headers);
       throw new Error(
         `Failed to fetch exchange rates for ${dateString}, response: ${response.status}, statusText: ${response.statusText}`
       );

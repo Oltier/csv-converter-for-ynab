@@ -4,10 +4,8 @@ import DBClient from './db/DBClient';
 import processErstePipe from './pipelines/erste-pipe';
 
 async function doStuff() {
-  await Promise.all([
-    processOtpPipe(`${__dirname}/examples/input/otp.xlsx`),
-    // processErstePipe(`${__dirname}/examples/input/erste.csv`)
-  ]);
+  await processOtpPipe(`${__dirname}/examples/input/otp.xlsx`);
+  await processErstePipe(`${__dirname}/examples/input/erste.csv`)
 }
 
 doStuff()

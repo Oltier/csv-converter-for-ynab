@@ -1,5 +1,5 @@
 import { TransactionCombinedAmount } from './types';
-import { TransactionInput, TransactionInputMapping } from '../inputs/types';
+import { TransactionInput, TransactionInputMapping, TransactionInputMappingConfig } from '../inputs/types';
 import { transform } from 'csv';
 import { trim } from 'lodash';
 
@@ -24,13 +24,19 @@ const parseToTransaction = (mapping: TransactionInputMapping) =>
         const trimmedData = trimKeys(data);
         const dataTrimmedKeys = Object.keys(trimmedData);
         const rawTransaction = Object.entries(mapping).reduce(
-          (acc, [transactionKey, rawKeys]: [string, string | string[]]) => {
+          (acc, [transactionKey, maybeRawKeys]: [string, string | string[] | TransactionInputMappingConfig]) => {
+            const rawKeys =
+              typeof maybeRawKeys === 'object' && 'fields' in maybeRawKeys ? maybeRawKeys.fields : maybeRawKeys;
             const mappingKeys = Array.isArray(rawKeys) ? rawKeys : [rawKeys];
             const trimmedMappingKeys = mappingKeys.map((key) => key.trim());
             const sourceKey = trimmedMappingKeys.find((key) => dataTrimmedKeys.includes(key) && !!trimmedData[key]);
 
             if (sourceKey) {
               acc[transactionKey as keyof TransactionCombinedAmount] = trimmedData[sourceKey];
+            }
+
+            if (typeof maybeRawKeys === 'object' && 'default' in maybeRawKeys) {
+              acc[transactionKey as keyof TransactionCombinedAmount] = maybeRawKeys.default;
             }
 
             return acc;
@@ -40,7 +46,7 @@ const parseToTransaction = (mapping: TransactionInputMapping) =>
 
         const res = {
           date: parseDate(rawTransaction.date),
-          payee: rawTransaction.payee,
+          payee: parsePayee(rawTransaction.payee),
           memo: typeof rawTransaction.memo === 'string' ? rawTransaction.memo.replace(/\s+/g, ' ') : '',
           amount: parseAmount(rawTransaction.amount),
           currency: rawTransaction.currency,
@@ -94,6 +100,13 @@ function parseDate(maybeDate: unknown): Date {
   }
 
   return new Date(date);
+}
+
+function parsePayee(maybePayee: string | undefined) {
+  if (!maybePayee) {
+    throw new Error(`Could not parse payee: ${maybePayee}`);
+  }
+  return maybePayee;
 }
 
 export default parseToTransaction;

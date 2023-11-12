@@ -22,8 +22,11 @@ import { TransactionInput, TransactionInputMapping } from '../inputs/types';
 // }
 
 export const ersteMapping: TransactionInputMapping = {
-  'date': 'Tranzakció dátuma és ideje',
-  'payee': 'Partner név',
+  'date': ['Tranzakció dátuma és ideje', 'Könyvelés dátuma'],
+  'payee': {
+    fields: 'Partner név',
+    default: 'Erste Bank',
+  },
   'memo': 'Közlemény',
   'amount': 'Összeg',
   'currency': 'Devizanem',
