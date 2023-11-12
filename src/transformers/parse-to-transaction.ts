@@ -33,9 +33,7 @@ const parseToTransaction = (mapping: TransactionInputMapping) =>
 
             if (sourceKey) {
               acc[transactionKey as keyof TransactionCombinedAmount] = trimmedData[sourceKey];
-            }
-
-            if (typeof maybeRawKeys === 'object' && 'default' in maybeRawKeys) {
+            } else if (typeof maybeRawKeys === 'object' && 'default' in maybeRawKeys) {
               acc[transactionKey as keyof TransactionCombinedAmount] = maybeRawKeys.default;
             }
 
@@ -58,6 +56,9 @@ const parseToTransaction = (mapping: TransactionInputMapping) =>
         return res;
       } catch (e) {
         console.error(JSON.stringify(data, null, 2));
+        if (e instanceof Error) {
+          cb(e);
+        }
         throw e;
       }
     }

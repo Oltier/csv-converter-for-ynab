@@ -11,16 +11,7 @@ import currencyExchange from '../transformers/currency-exchange';
 import moment from 'moment';
 import { TransactionCombinedAmount } from '../transformers/types';
 import filter from '../transformers/filter';
-import { TransactionInput, TransactionInputMapping } from '../inputs/types';
-
-// export const otpMapping: TransactionInputMapping = {
-//   'Tranzakció dátuma': 'date',
-//   'Partner neve': 'payee',
-//   Közlemény: 'memo',
-//   Összeg: 'amount',
-//   Pénznem: 'currency',
-//   'Számla szám': 'accountNumber'
-// };
+import { TransactionInputMapping } from '../inputs/types';
 
 export const otpMapping: TransactionInputMapping = {
   date: 'Tranzakció dátuma',
