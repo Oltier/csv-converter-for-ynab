@@ -18,7 +18,7 @@ export const szepMapping: TransactionInputMapping = {
   inflow: 'Jóváírás',
 };
 
-export default async function processSzepPipe(path: string): Promise<void> {
+export default async function processPipe(path: string): Promise<void> {
   const xlsx = XLSX.readFile(path);
   const worksheet = xlsx.Sheets[xlsx.SheetNames[0]];
 
@@ -60,7 +60,7 @@ export default async function processSzepPipe(path: string): Promise<void> {
       columns: true
     } satisfies parser.Options),
     parseToTransaction(szepMapping),
-    currencyExchange(exchangeRateService, 'EUR', 'HUF'),
+    // currencyExchange(exchangeRateService, 'EUR', 'HUF'),
     convertToYnabCsv(),
     stringify({
       delimiter: ','

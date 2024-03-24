@@ -6,13 +6,24 @@ import processSzepPipe from './pipelines/szep-pipe';
 
 async function doStuff() {
   console.log('Starting...');
-  console.log('Processing OTP...');
-  await processOtpPipe(`${process.cwd()}/inputs/otp.xlsx`);
-  console.log('Processing Erste...');
-  await processErstePipe(`${process.cwd()}/inputs/erste.csv`);
-  console.log('Processing Szep...');
-  await processSzepPipe(`${process.cwd()}/inputs/szep.xlsx`);
+  await Promise.all([
+    processFile(`${process.cwd()}/inputs/otp.xlsx`, processOtpPipe),
+    processFile(`${process.cwd()}/inputs/erste.csv`, processErstePipe),
+    processFile(`${process.cwd()}/inputs/szep.xlsx`, processSzepPipe)
+  ]);
   console.log('Done!');
+}
+
+async function processFile(filePath: string, processor: (path: string) => Promise<void>): Promise<void> {
+  try {
+    const filePathArr = filePath.split('/');
+    console.log(`Processing ${filePathArr[filePathArr.length - 1]}...`);
+    await processor(filePath);
+    console.log(`Done processing ${filePathArr[filePathArr.length - 1]}.`);
+  } catch (e) {
+    console.error(`error processing ${filePath}, skipping...`, e);
+    return Promise.resolve();
+  }
 }
 
 doStuff()

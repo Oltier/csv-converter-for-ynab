@@ -20,7 +20,7 @@ export const ersteMapping: TransactionInputMapping = {
   currency: 'Devizanem'
 };
 
-export default async function processErstePipe(path: string): Promise<void> {
+export default async function processPipe(path: string): Promise<void> {
   const exchangeRateService = ExchangeService.getInstance();
 
   const outputPath = `${process.cwd()}/outputs/erste-ynab.csv`;
@@ -41,7 +41,7 @@ export default async function processErstePipe(path: string): Promise<void> {
       bom: true
     } satisfies parser.Options),
     parseToTransaction(ersteMapping),
-    currencyExchange(exchangeRateService, 'EUR', 'HUF'),
+    // currencyExchange(exchangeRateService, 'EUR', 'HUF'),
     convertToYnabCsv(),
     stringify({
       delimiter: ','

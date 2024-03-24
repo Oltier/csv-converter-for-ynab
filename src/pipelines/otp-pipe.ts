@@ -22,7 +22,7 @@ export const otpMapping: TransactionInputMapping = {
   accountNumber: 'Számla szám'
 };
 
-export default async function processOtpPipe(path: string): Promise<void> {
+export default async function processPipe(path: string): Promise<void> {
   const xlsx = XLSX.readFile(path);
   const worksheet = xlsx.Sheets[xlsx.SheetNames[0]];
 
@@ -68,7 +68,7 @@ export default async function processOtpPipe(path: string): Promise<void> {
     filter((data: TransactionCombinedAmount) =>
       process.env.EXPECTED_ACCOUNT_NUMBER ? data.accountNumber === process.env.EXPECTED_ACCOUNT_NUMBER : true
     ),
-    currencyExchange(exchangeRateService, 'EUR', 'HUF'),
+    // currencyExchange(exchangeRateService, 'EUR', 'HUF'),
     convertToYnabCsv(),
     stringify({
       delimiter: ','
