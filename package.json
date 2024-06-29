@@ -1,12 +1,12 @@
 {
   "name": "ynab-csv-converter",
-  "packageManager": "yarn@4.0.0",
+  "packageManager": "yarn@4.3.1",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "scripts": {
     "build": "yarn db:generate && tsc",
     "db:generate": "yarn pnpify prisma generate",
-    "start": "ts-node ./src/index.ts",
+    "start": "yarn db:generate && ts-node ./src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {

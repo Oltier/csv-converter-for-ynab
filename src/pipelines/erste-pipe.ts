@@ -21,7 +21,7 @@ export const ersteMapping: TransactionInputMapping = {
 };
 
 export default async function processPipe(path: string): Promise<void> {
-  const exchangeRateService = ExchangeService.getInstance();
+  // const exchangeRateService = ExchangeService.getInstance();
 
   const outputPath = `${process.cwd()}/outputs/erste-ynab.csv`;
   const writeStream = fs.createWriteStream(outputPath);

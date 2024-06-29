@@ -3,13 +3,22 @@ import processOtpPipe from './pipelines/otp-pipe';
 import DBClient from './db/DBClient';
 import processErstePipe from './pipelines/erste-pipe';
 import processSzepPipe from './pipelines/szep-pipe';
+import processErsteJsonPipe from './pipelines/erste-json-pipe';
+import fs from 'fs';
 
 async function doStuff() {
   console.log('Starting...');
+
+  // If folder process.cwd()/outputs does not exist, create it
+  if (!fs.existsSync(`${process.cwd()}/outputs`)) {
+    fs.mkdirSync(`${process.cwd()}/outputs`);
+  }
+
   await Promise.all([
     processFile(`${process.cwd()}/inputs/otp.xlsx`, processOtpPipe),
     processFile(`${process.cwd()}/inputs/erste.csv`, processErstePipe),
-    processFile(`${process.cwd()}/inputs/szep.xlsx`, processSzepPipe)
+    processFile(`${process.cwd()}/inputs/szep.xlsx`, processSzepPipe),
+    processFile(`${process.cwd()}/inputs/erste.json`, processErsteJsonPipe),
   ]);
   console.log('Done!');
 }

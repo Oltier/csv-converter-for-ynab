@@ -34,9 +34,9 @@ export default async function processPipe(path: string): Promise<void> {
     }
   }
 
-  const exchangeRateService = ExchangeService.getInstance();
+  // const exchangeRateService = ExchangeService.getInstance();
 
-  await exchangeRateService.prePopulateCache(dateValues);
+  // await exchangeRateService.prePopulateCache(dateValues);
 
   const outputPath = `${process.cwd()}/outputs/szep-ynab.csv`;
   const writeStream = fs.createWriteStream(outputPath);
