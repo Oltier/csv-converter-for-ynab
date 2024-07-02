@@ -40,13 +40,36 @@ export default async function processErsteJsonPipe(path: string): Promise<void> 
 
   writeStream.write('Date,Payee,Memo,Amount\n');
 
-  const rawTransactions = ersteExport.transactions.booked.concat(ersteExport.transactions.pending);
-  rawTransactions.map<YnabTransaction>((ersteTransaction) => ({
-    date: moment(ersteTransaction.bookingDate).format('MM/DD/YYYY'),
-    payee: ersteTransaction.debtorName || 'Erste Bank',
-    memo: ersteTransaction.remittanceInformationUnstructured,
-    amount: ersteTransaction.transactionAmount.amount
-  }))
+  const lastReconciledDate = '2024-05-25';
+
+  const rawTransactions = ersteExport.transactions.booked;
+  rawTransactions
+    .filter((ersteTransaction) => moment(ersteTransaction.valueDate).isSameOrAfter(lastReconciledDate))
+    .map<YnabTransaction>((ersteTransaction) => ({
+      date: moment(ersteTransaction.valueDate).format('MM/DD/YYYY'),
+      payee: ersteTransaction.debtorName || 'Erste Bank',
+      memo: ersteTransaction.remittanceInformationUnstructured,
+      amount: ersteTransaction.transactionAmount.amount
+    }))
+    .forEach((ynabTransaction) => {
+      writeStream.write(`${ynabTransaction.date},${ynabTransaction.payee},${ynabTransaction.memo},${ynabTransaction.amount}\n`);
+    });
+
+  const pendingTransactions = ersteExport.transactions.pending;
+
+  const regex = /\s+([A-Z]{2,})\s+(.+)\sEredeti/;
+
+  pendingTransactions
+    .filter((ersteTransaction) => moment(ersteTransaction.valueDate).isSameOrAfter(lastReconciledDate))
+    .map<YnabTransaction>((ersteTransaction) => {
+      const maybeMatchCityAndSeller = ersteTransaction.remittanceInformationUnstructured.match(regex)
+      return {
+        date: moment(ersteTransaction.valueDate).format('MM/DD/YYYY'),
+        payee: maybeMatchCityAndSeller ? maybeMatchCityAndSeller[2] : 'Unknown',
+        memo: maybeMatchCityAndSeller ? `${maybeMatchCityAndSeller[1]} ${maybeMatchCityAndSeller[2]}` : '',
+        amount: ersteTransaction.transactionAmount.amount
+      };
+    })
     .forEach((ynabTransaction) => {
       writeStream.write(`${ynabTransaction.date},${ynabTransaction.payee},${ynabTransaction.memo},${ynabTransaction.amount}\n`);
     });

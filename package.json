@@ -14,12 +14,12 @@
     "@types/node": "^20.8.10",
     "@yarnpkg/pnpify": "^4.0.0",
     "prettier": "3.0.3",
-    "prisma": "5.5.2",
+    "prisma": "5.16.1",
     "ts-node": "^10.9.1",
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "@prisma/client": "5.5.2",
+    "@prisma/client": "5.16.1",
     "csv": "^6.3.5",
     "dotenv": "^16.3.1",
     "lodash": "^4.17.21",
